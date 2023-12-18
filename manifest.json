@@ -1,0 +1,34 @@
+{
+    "manifest_version": 2,
+    "name": "DimeTime Saver",
+    "version": "1.0",
+    "description":  "shows how much time you’ve spent on a shopping/coupon website in relation to your hourly wage",
+    "permissions": ["notifications, tabs"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://amazon.com/*",
+                "https://walmart.com/*",
+                "https://costco.com/*",
+                "https://target.com/*",
+                "https://instacart.com/*",
+                "https://sayweee.com/*",
+                "https://www.goodeggs.com/*",
+                "https://doordash.com/*",
+                "https://retailmenot.com/*",
+                "https://groupon.com/*",
+                "https://www.latimes.com/coupon-codes/*",
+                "https://slickdeals.net/*",
+                "https://coupons.com/*",
+                "https://couponfollow.com/*",
+                "https://couponcabin.com/*",
+                "https://thekrazycouponlady.com/*",
+                "https://dealsplus.com/*"
+
+            ]
+        }
+    ]
+}
