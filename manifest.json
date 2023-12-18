@@ -6,29 +6,6 @@
     "permissions": ["notifications, tabs"],
     "background": {
         "service_worker": "background.js"
-    },
-    "content_scripts": [
-        {
-            "matches": [
-                "https://amazon.com/*",
-                "https://walmart.com/*",
-                "https://costco.com/*",
-                "https://target.com/*",
-                "https://instacart.com/*",
-                "https://sayweee.com/*",
-                "https://www.goodeggs.com/*",
-                "https://doordash.com/*",
-                "https://retailmenot.com/*",
-                "https://groupon.com/*",
-                "https://www.latimes.com/coupon-codes/*",
-                "https://slickdeals.net/*",
-                "https://coupons.com/*",
-                "https://couponfollow.com/*",
-                "https://couponcabin.com/*",
-                "https://thekrazycouponlady.com/*",
-                "https://dealsplus.com/*"
-
-            ]
-        }
-    ]
+    }
 }
+    
