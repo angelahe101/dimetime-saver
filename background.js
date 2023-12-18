@@ -34,7 +34,7 @@ const target_websites = [
 
 //create function to check timer
 function check_timer(initial_time, lapsed_time)
-    chrome.tabs.query({current: true}, function(tabs)){
+    chrome.tabs.query({currentWindow: true, active: true}, function(tabs)){
         var url = tabs[0].url;
         for (const target_website of target_websites) {
             if (url.match(new RegExp(target_website))) {
@@ -49,8 +49,8 @@ function check_timer(initial_time, lapsed_time)
     if ((initial_time + lapsed_time) < Date.now()) {
         var time = new Date()
         var notification = {
-            type: "basic"
-            title: "Is this the best bang for your time?"
+            type: "basic",
+            title: "Is this the best bang for your time?",
             message: "You've spent $2.67 (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?"
         };
 
