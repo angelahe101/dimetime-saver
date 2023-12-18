@@ -33,39 +33,41 @@ const target_websites = [
 ];
 
 //create function to check timer
-function check_timer(initial_time, lapsed_time)
-    chrome.tabs.query({currentWindow: true, active: true}, function(tabs)){
+function check_timer(initial_time, lapsed_time) {
+    chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
         var url = tabs[0].url;
         for (const target_website of target_websites) {
             if (url.match(new RegExp(target_website))) {
                 console.log("Target website found:, proceed with timer", url);
-            break
+            break;
             }
         }
+
         if (!target_website) {
             console.log("Not a target website, skipping timer")
         }
-    }
-    if ((initial_time + lapsed_time) < Date.now()) {
-        var time = new Date()
-        var notification = {
-            type: "basic",
-            title: "Is this the best bang for your time?",
-            message: "You've spent $2.67 (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?"
-        };
-
-     chrome.notifications.create("Is this the best bang for your time?");
-     console.log("timer reset");
-     reset_timer();
     
-     //clear notification after 30 seconds
-     setTimeout(function() {
-        chrome.notifications.clear("Is this the best bang for your time?");
-     }, 30000);
-    }
+        if ((initial_time + lapsed_time) < Date.now()) {
+            var time = new Date()
+            var notification = {
+                type: "basic",
+                title: "Is this the best bang for your time?",
+                message: "You've spent $2.67 (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?"
+            };
 
-//reset the timer when chrome restarts
-chrome.runtime.onStartup.addListener(reset_timer);
+            chrome.notifications.create("Is this the best bang for your time?");
+            console.log("timer reset");
+            reset_timer();
+    
+            //clear notification after 30 seconds
+            setTimeout(function() {
+                chrome.notifications.clear("Is this the best bang for your time?");
+            }, 30000);
+        }
+    });
+}
+
+
 
 
 
