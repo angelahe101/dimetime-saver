@@ -1,12 +1,14 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "DimeTime Saver",
     "version": "1.0",
     "description":  "shows how much time you’ve spent on a shopping/coupon website in relation to your hourly wage",
-    "permissions": ["notifications, tabs, storage"],
+    "permissions": ["notifications", "tabs", "storage"],
+    "icons": {
+        "128": "128.png"
+    },
     "background": {
-        "scripts": "background.js",
-        "persistent": "false"
+        "service_worker": "background.js"
     }
 }
     
