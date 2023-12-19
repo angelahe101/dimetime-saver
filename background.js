@@ -4,11 +4,13 @@ chrome.runtime.onInstalled.addListener(function(){
     console.log("initial values set");
 });
 
-//retrieve stored intervals
-interval_minutes = chrome.storage.sync.get('interval', function(data) {
+//retrieve stored intervals and start timer
+chrome.storage.sync.get('interval', function (data){
     console.log("set interval for first time", data.interval);
-    return data.interval;
+    interval_minutes = data.interval;
+    check_timer(time_zero, interval_minutes * 60000);
 });
+
 // set the timer
 var time_zero = 0;
 console.log("timer set")
@@ -26,29 +28,30 @@ function check_timer(initial_time, lapsed_time) {
         console.log("query active tab and retrieve url of active tab");
         //create target websites
         const target_websites = [
-            "https://amazon.com/*",
-            "https://walmart.com/*",
-            "https://costco.com/*",
-            "https://target.com/*",
-            "https://instacart.com/*",
-            "https://sayweee.com/*",
-            "https://www.goodeggs.com/*",
-            "https://doordash.com/*",
-            "https://retailmenot.com/*",
-            "https://groupon.com/*",
-            "https://www.latimes.com/coupon-codes/*",
-            "https://slickdeals.net/*",
-            "https://coupons.com/*",
-            "https://couponfollow.com/*",
-            "https://couponcabin.com/*",
-            "https://thekrazycouponlady.com/*",
-            "https://dealsplus.com/*"
+            "https://www.amazon.com",
+            "https://www.walmart.com",
+            "https://www.costco.com",
+            "https://www.target.com",
+            "https://www.instacart.com",
+            "https://www.sayweee.com",
+            "https://www.goodeggs.com",
+            "https://www.doordash.com",
+            "https://www.retailmenot.com",
+            "https://www.groupon.com",
+            "https://www.latimes.com/coupon-codes",
+            "https://www.slickdeals.net",
+            "https://www.coupons.com",
+            "https://www.couponfollow.com",
+            "https://www.couponcabin.com",
+            "https://www.thekrazycouponlady.com",
+            "https://www.dealsplus.com"
         ];
         //initialize target_website variable
         var target_website = null; 
 
         for (const target of target_websites) {
-            if (url.match(new RegExp(target_website))) {
+            console.log("checking if", url, "starts with", target)
+            if (url.startsWith(target)) {
                 console.log("Target website found:, proceed with timer", url);
                 target_website = target;
                 break;
@@ -63,10 +66,12 @@ function check_timer(initial_time, lapsed_time) {
             var time = new Date()
             var notification = {
                 type: "basic",
+                iconUrl: "128.png",
                 title: "Is this the best bang for your time?",
                 message: "You've spent $2.67 (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?",
-                iconUrl: "128.png"
+                priority: 2
             };
+            console.log("time and notification variables created")
             chrome.notifications.create("notification_id", notification, function(notification_id) {})
             console.log("create notification id")
             //reset timer
@@ -74,21 +79,22 @@ function check_timer(initial_time, lapsed_time) {
             console.log("timer reset");
     
             //clear notification after 30 seconds
-            setTimeout(function() {
-                chrome.notifications.clear("notification");
-            }, 30000);
+            //setTimeout(function() {
+            //    chrome.notifications.clear("notification_id");
+            //}, 30000);
         }
         //call check_timer again for continuous execution
         setTimeout(function() {
             check_timer(time_zero,data.interval * 60000);
-        }, 20 * 60 * 1000); //20 minutes in seconds
+        }, 5); //5 seconds in seconds
     });
 }
 
 //use a listener to detect a url change
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-console.log("url change detected")
+    console.log("url change detected. the url is:", changeInfo.url)
     if (changeInfo.url) {
+        console.log("changeInfo.url is true")
         //call check_timer to start continuous execution
         check_timer(time_zero, 0);
     }
