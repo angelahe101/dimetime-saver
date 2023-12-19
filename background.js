@@ -1,6 +1,6 @@
 // set initial values upon installation
 chrome.runtime.onInstalled.addListener(function(){
-    chrome.storage.sync.set({interval: 0.25, on: 1});
+    chrome.storage.sync.set({interval: 0.1, on: 1});
     console.log("initial values set");
 });
 
