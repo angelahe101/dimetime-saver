@@ -64,7 +64,8 @@ function check_timer(initial_time, lapsed_time) {
             var notification = {
                 type: "basic",
                 title: "Is this the best bang for your time?",
-                message: "You've spent $2.67 (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?"
+                message: "You've spent $2.67 (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?",
+                iconUrl: "128.png"
             };
             chrome.notifications.create("notification_id", notification, function(notification_id) {})
             console.log("create notification id")
