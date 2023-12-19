@@ -85,8 +85,15 @@ function check_timer(initial_time, lapsed_time) {
     });
 }
 
-//call check_timer to start continuous execution
-check_timer(time_zero, 0);
+//use a listener to detect a url change
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+console.log("url change detected")
+    if (changeInfo.url) {
+        //call check_timer to start continuous execution
+        check_timer(time_zero, 0);
+    }
+});
+
 
 
 
