@@ -1,25 +1,29 @@
-let wage_input_value;
+let dime_time_value;
 
 // Listen for messages from popup.js
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        if (request.wage_input_value) {
-            console.log('received message containing wage_input_value from popup.js')
-            wage_input_value = parseFloat(request.wage_input_value);
+        if (request.message === "dime_time_value") {
+            console.log('received message containing dime_time_value from popup.js', request.dime_time_value)
+            dime_time_value = parseFloat(request.dime_time_value);
+            return true
+        } else {
+            console.log('message delivery unsuccessful');
         }
     }
 );
 
-// Initialize stored wage input value if not set
-chrome.storage.sync.get('wage_input_value', function(data) {
-    if (!data.wage_input_value) {
-        // If the wage input value is not stored, set a default of $20
-        chrome.storage.sync.set({ 'data.wage_input_value': 20.00 });
+// Initialize dime_time_value value if not set
+chrome.storage.sync.get('dime_time_value', function(data) {
+    if (!data.dime_time_value) {
+        // If the wage input value is not stored, set a default of $3
+        chrome.storage.sync.set({ 'dime_time_value': 3.00 });
     } else {
         //if the wage input value is stored, assign it to the variable
-        wage_input_value = parseFloat(data.wage_input_value);
+        dime_time_value = parseFloat(data.dime_time_value);
     }
 });
+
 
 // set default interval to 5 seconds
 var interval_seconds = 5;
@@ -39,12 +43,12 @@ function reset_timer() {
 
 //create function to check timer
 function check_timer(initial_time) {
-    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    chrome.tabs.query({currentWindow: true, active: true}, function (tabs) {
         if (tabs.length == 0) {
             return;
         }
         var url = tabs[0].url;
-        console.log("query active tab and retrieve url of active tab");
+        console.log("query active tab and retrieve url of active tab", url);
         //create target websites
         const target_websites = [
             "https://www.amazon.com",
@@ -69,7 +73,7 @@ function check_timer(initial_time) {
         var target_website = null;
 
         for (const target of target_websites) {
-            console.log("checking if", url, "starts with", target)
+            console.log("checking if", url, "starts with", target);
             if (url.startsWith(target)) {
                 console.log("Target website found:, proceed with timer", url);
                 target_website = target;
@@ -80,9 +84,9 @@ function check_timer(initial_time) {
         if (target_website && Date.now() >= initial_time + interval_minutes * 60000) {
             var notification = {
                 type: "basic",
-                iconUrl: "128.png",
+                iconUrl: chrome.runtime.getURL('images/128.png'),
                 title: "Is this the best bang for your time?",
-                message: "You've spent $${wage_input_value.toFixed(2)} (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?",
+                message: `You've spent $${dime_time_value.toFixed(2)} (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?`,
                 priority: 2
             };
             console.log("time and notification variables created");
@@ -91,18 +95,17 @@ function check_timer(initial_time) {
 
             chrome.notifications.create(notification_id, notification, function (notification_id) {
                 if (chrome.runtime.lastError) {
-                    console.error(chrome.runtime.lastError);
+                    console.error("Notification creation failed. Error details:", chrome.runtime.lastError);
                 } else {
                     console.log("Notification created successfully");
                 }
-
                 // reset timer
                 reset_timer();
                 console.log("timer reset");
             });
 
         } else {
-            console.log("Not a target website or not enough time elapsed, skipping timer")
+            console.log("Not a target website or not enough time elapsed, skipping timer");
         }
 
         //call check_timer again for continuous execution
@@ -120,7 +123,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     console.log("url change detected. the url is:", changeInfo.url)
 
     //check if changeinfo.url is defined
-    if ( changeInfo && changeInfo.url) {
+    if (changeInfo && changeInfo.url) {
         console.log("setting timeout to check timer");
 
         //add a slight delay before calling check_timer

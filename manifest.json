@@ -3,18 +3,20 @@
     "name": "DimeTime Saver",
     "version": "1.0",
     "icons": {
-        "128": "128.png"
+        "128": "images/128.png"
     },
     "description":  "shows how much time you’ve spent on a shopping/coupon website in relation to your hourly wage",
     "permissions": ["notifications", "tabs", "storage", "scripting"],
     "background": {
         "service_worker": "background.js"},
     "action": {
-        "default_title": "Options",
-        "default_popup": "index.html",
         "default_icon": {
-            "128": "128.png"
-        }
+            "16": "images/16.png",   
+            "24": "images/24.png",   
+            "32": "images/32.png"
+        },
+        "default_title": "Options",
+        "default_popup": "popup.html"
     }
 }
     
