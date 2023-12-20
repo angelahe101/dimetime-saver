@@ -1,18 +1,23 @@
+let wage_input_value;
+
 // Listen for messages from popup.js
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.wage_input_value) {
             console.log('received message containing wage_input_value from popup.js')
+            wage_input_value = parseFloat(request.wage_input_value);
         }
     }
-)
+);
 
 // Initialize stored wage input value if not set
 chrome.storage.sync.get('wage_input_value', function(data) {
     if (!data.wage_input_value) {
-        // If the wage input value is not stored, set a default or prompt the user
-        // For simplicity, let's set a default value of 10.00
+        // If the wage input value is not stored, set a default of $20
         chrome.storage.sync.set({ 'data.wage_input_value': 20.00 });
+    } else {
+        //if the wage input value is stored, assign it to the variable
+        wage_input_value = parseFloat(data.wage_input_value);
     }
 });
 
