@@ -1,3 +1,21 @@
+// Listen for messages from popup.js
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.wage_input_value) {
+            console.log('received message containing wage_input_value from popup.js')
+        }
+    }
+)
+
+// Initialize stored wage input value if not set
+chrome.storage.sync.get('wage_input_value', function(data) {
+    if (!data.wage_input_value) {
+        // If the wage input value is not stored, set a default or prompt the user
+        // For simplicity, let's set a default value of 10.00
+        chrome.storage.sync.set({ 'data.wage_input_value': 20.00 });
+    }
+});
+
 // set default interval to 5 seconds
 var interval_seconds = 5;
 
@@ -59,7 +77,7 @@ function check_timer(initial_time) {
                 type: "basic",
                 iconUrl: "128.png",
                 title: "Is this the best bang for your time?",
-                message: "You've spent $2.67 (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?",
+                message: "You've spent $${wage_input_value.toFixed(2)} (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?",
                 priority: 2
             };
             console.log("time and notification variables created");
