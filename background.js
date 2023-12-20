@@ -1,29 +1,25 @@
-// set initial values upon installation
-chrome.runtime.onInstalled.addListener(function(){
-    chrome.storage.sync.set({interval: 0.1, on: 1});
-    console.log("initial values set");
-});
+// set default interval to 5 seconds
+var interval_seconds = 5;
 
-//retrieve stored intervals and start timer
-chrome.storage.sync.get('interval', function (data){
-    console.log("set interval for first time", data.interval);
-    interval_minutes = data.interval;
-    check_timer(time_zero, interval_minutes * 60000);
-});
+//convert seconds to milliseconds
+var interval_minutes = interval_seconds / 60;
 
-// set the timer
+// set the timer to start at zero
 var time_zero = 0;
 console.log("timer set")
 
 //create function to reset timer
-function reset_timer(){
+function reset_timer() {
     console.log("function to reset timer created");
     time_zero = Date.now();
 }
 
 //create function to check timer
-function check_timer(initial_time, lapsed_time) {
-    chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+function check_timer(initial_time) {
+    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+        if (tabs.length == 0) {
+            return;
+        }
         var url = tabs[0].url;
         console.log("query active tab and retrieve url of active tab");
         //create target websites
@@ -47,7 +43,7 @@ function check_timer(initial_time, lapsed_time) {
             "https://www.dealsplus.com"
         ];
         //initialize target_website variable
-        var target_website = null; 
+        var target_website = null;
 
         for (const target of target_websites) {
             console.log("checking if", url, "starts with", target)
@@ -58,12 +54,7 @@ function check_timer(initial_time, lapsed_time) {
             }
         }
 
-        if (!target_website) {
-            console.log("Not a target website, skipping timer")
-        }
-    
-        if ((initial_time + lapsed_time) < Date.now()) {
-            var time = new Date()
+        if (target_website && Date.now() >= initial_time + interval_minutes * 60000) {
             var notification = {
                 type: "basic",
                 iconUrl: "128.png",
@@ -71,35 +62,52 @@ function check_timer(initial_time, lapsed_time) {
                 message: "You've spent $2.67 (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?",
                 priority: 2
             };
-            console.log("time and notification variables created")
-            chrome.notifications.create("notification_id", notification, function(notification_id) {})
-            console.log("create notification id")
-            //reset timer
-            reset_timer();
-            console.log("timer reset");
-    
-            //clear notification after 30 seconds
-            //setTimeout(function() {
-            //    chrome.notifications.clear("notification_id");
-            //}, 30000);
+            console.log("time and notification variables created");
+
+            var notification_id = `notification_${target_website}`;
+
+            chrome.notifications.create(notification_id, notification, function (notification_id) {
+                if (chrome.runtime.lastError) {
+                    console.error(chrome.runtime.lastError);
+                } else {
+                    console.log("Notification created successfully");
+                }
+
+                // reset timer
+                reset_timer();
+                console.log("timer reset");
+            });
+
+        } else {
+            console.log("Not a target website or not enough time elapsed, skipping timer")
         }
+
         //call check_timer again for continuous execution
-        setTimeout(function() {
-            check_timer(time_zero,data.interval * 60000);
-        }, 5); //5 seconds in seconds
+        setTimeout(function () {
+            check_timer(time_zero);
+        }, 5 * 1000); //5 seconds in milliseconds
     });
 }
+
+
+
 
 //use a listener to detect a url change
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     console.log("url change detected. the url is:", changeInfo.url)
-    if (changeInfo.url) {
-        console.log("changeInfo.url is true")
-        //call check_timer to start continuous execution
-        check_timer(time_zero, 0);
+
+    //check if changeinfo.url is defined
+    if ( changeInfo && changeInfo.url) {
+        console.log("setting timeout to check timer");
+
+        //add a slight delay before calling check_timer
+        setTimeout(function () {
+            console.log("actually checking the timer");
+            //call check_timer to start continuous execution
+            check_timer(time_zero);
+        }, 10000);
     }
 });
-
 
 
 
