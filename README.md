@@ -1,2 +1,2 @@
 # dimetime-saver
- This chrome extension tracks how much time you spend on shopping sites compared to your hourly wage. I made it because I tend to waste too much time hunting for deals. The extension shows how much your time is worth, helping you find the right balance between saving money and your hourly wage.
+This chrome extension reminds you how much your time is worth, helping you find the right balance between saving money and your hourly wage. I made it because I tend to waste too much time hunting for deals. It will send you a reminder about how much your time is worth if you spend more than twenty minutes on a shopping website for basic necessities (e.g. Walmart, Target, Amazon).
