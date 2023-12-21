@@ -1,6 +1,20 @@
-let dime_time_value;
+//display welcome notification upon installation of extension
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === "install") { // Check if the extension is newly installed
+      chrome.notifications.create({
+        type: "basic",
+        iconUrl: chrome.runtime.getURL('images/128.png'),
+        title: "Welcome!",
+        message: "Pin DimeTime Saver and then click on the icon to get started.",
+      });
+    }
+  });
 
-// Listen for messages from popup.js
+//initialize dime_time_value and currency_input_value
+let dime_time_value;
+let currency_input_value;
+
+// Listen for dime_time_value message from popup.js
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.message === "dime_time_value") {
@@ -8,28 +22,56 @@ chrome.runtime.onMessage.addListener(
             dime_time_value = parseFloat(request.dime_time_value);
             return true
         } else {
-            console.log('message delivery unsuccessful');
+            console.log('message delivery for dime_time_value unsuccessful');
         }
     }
 );
 
-// Initialize dime_time_value value if not set
+// Initialize dime_time_value if not set
 chrome.storage.sync.get('dime_time_value', function(data) {
     if (!data.dime_time_value) {
-        // If the wage input value is not stored, set a default of $3
-        chrome.storage.sync.set({ 'dime_time_value': 3.00 });
+        // If the dime_time_value is not stored, set a default of 3
+        chrome.storage.sync.set({ 'dime_time_value': 20.00 });
     } else {
-        //if the wage input value is stored, assign it to the variable
+        //if the dime_time_value is stored, assign it to the variable
         dime_time_value = parseFloat(data.dime_time_value);
     }
 });
+
+// Listen for currency_input_value message from popup.js
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.message === "currency_input_value") {
+            console.log('received message containing currency_input_value from popup.js', request.currency_input_value)
+            currency_input_value = request.currency_input_value;
+            return true
+        } else {
+            console.log('message delivery for currency_input_value unsuccessful');
+        }
+    }
+);
+
+// Initialize currency_input_value value if not set
+chrome.storage.sync.get('currency_input_value', function(data) {
+    if (!data.currency_input_value) {
+        // If the wage input value is not stored, set a default of $
+        chrome.storage.sync.set({ 'currency_input_value': '$'});
+    } else {
+        //if the wage input value is stored, assign it to the variable
+        currency_input_value = parseFloat(data.currency_input_value);
+    }
+});
+
+
+
+
 
 
 // set default interval to 5 seconds
 var interval_seconds = 5;
 
 //convert seconds to milliseconds
-var interval_minutes = interval_seconds / 60;
+var interval_milliseconds = interval_seconds * 1000;
 
 // set the timer to start at zero
 var time_zero = 0;
@@ -81,12 +123,12 @@ function check_timer(initial_time) {
             }
         }
 
-        if (target_website && Date.now() >= initial_time + interval_minutes * 60000) {
+        if (target_website && Date.now() >= initial_time + interval_milliseconds) {
             var notification = {
                 type: "basic",
                 iconUrl: chrome.runtime.getURL('images/128.png'),
                 title: "Is this the best bang for your time?",
-                message: `You've spent $${dime_time_value.toFixed(2)} (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?`,
+                message: `You've spent ${currency_input_value}${dime_time_value.toFixed(2)} (twenty minutes) looking for a cheap deal. Do you want to keep on comparison shopping?`,
                 priority: 2
             };
             console.log("time and notification variables created");
@@ -130,7 +172,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         setTimeout(function () {
             console.log("actually checking the timer");
             //call check_timer to start continuous execution
-            check_timer(time_zero);
+            check_timer(time_zero)
+            console.log("check_timer called")
+            ;
         }, 10000);
     }
 });

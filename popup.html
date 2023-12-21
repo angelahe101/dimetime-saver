@@ -3,18 +3,30 @@
 <head>
     <style>
         html {
-            min-height: 5em;
+            min-height: 10em;
             min-width: 10em;
             background: lightgreen;
         }
     </style>
-    <title> DimeTime Options</title>
+    <title> DimeTime Saver Options</title>
 </head>
 
 <body>
+    <div style="text-align: center;">
+    <b>DimeTime Options</b>
+    </div>
+    <br> Enter your hourly wage here using only numbers:
+    <br>
     <input id="wage_input" type="text" />
-    <button id="wage_input_button">Apply</button>
-
+    <div style="text-align: center;">
+    <button style="margin:5px;" id="wage_input_button">Apply</button>
+    </div>
+    <br> Enter your currency symbol here (e.g. $):
+    <br>
+    <input id="currency_input" type="text" />
+    <div style="text-align: center;">
+    <button style="margin:5px;" id="currency_input_button">Apply</button>
+    </div>
     <script src="popup.js"></script>
 </body>
 

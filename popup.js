@@ -1,3 +1,4 @@
+//WAGE INPUT
 //retrieve the stored wage input if available
 chrome.storage.sync.get('wage_input_value', function (data) {
     if (data.wage_input_value) {
@@ -35,6 +36,45 @@ wage_input_button.onclick = function () {
 
     } else {
         console.log('Not a valid number.');
+    }
+        
+};
+
+//CURRENCY INPUT
+//retrieve the stored currency input if available
+chrome.storage.sync.get('currency_input_value', function (data) {
+    if (data.currency_input_value) {
+        //if a value is stored, set it in the input field
+        currency_input.value = data.currency_input_value;
+    }
+});
+
+//retrieve references to HTML elements
+//let currency_input = document.getElementById('currency_input');
+//let currency_input_button = document.getElementById('currency_input_button');
+
+//retrieve reference to background.js
+//let bkgd = chrome.extension.getBackgroundPage();
+
+currency_input_button.onclick = function () {
+    // retrieve the value from the input field
+    let currency_input_value = currency_input.value;
+
+    //check if the input is *not* a number
+    if (isNaN(currency_input_value)) {
+        //store currency_input_value in Chrome Storage
+        chrome.storage.sync.set({'currency_input_value': currency_input_value});
+
+        //send a message to background.js with currency_input_value
+        chrome.runtime.sendMessage({
+            message: "currency_input_value",
+            currency_input_value: currency_input_value},
+            function (response) {
+                console.log(response);
+            });
+
+    } else {
+        console.log('Not a valid currency symbol.');
     }
         
 };
