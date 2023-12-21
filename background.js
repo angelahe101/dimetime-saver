@@ -67,11 +67,11 @@ chrome.storage.sync.get('currency_input_value', function(data) {
 
 
 
-// set default interval to 5 seconds
-var interval_seconds = 5;
+// set default interval to 20 minutes
+var interval_minutes = 20;
 
 //convert seconds to milliseconds
-var interval_milliseconds = interval_seconds * 1000;
+var interval_milliseconds = interval_minutes * 60000;
 
 // set the timer to start at zero
 var time_zero = 0;
