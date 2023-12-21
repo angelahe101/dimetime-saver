@@ -5,7 +5,7 @@
     "icons": {
         "128": "images/128.png"
     },
-    "description":  "shows how much time you’ve spent on a shopping/coupon website in relation to your hourly wage",
+    "description":  "calculates how much your time is worth in relation to your hourly wage",
     "permissions": ["notifications", "tabs", "storage", "scripting"],
     "background": {
         "service_worker": "background.js"},
