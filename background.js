@@ -108,8 +108,11 @@ function check_timer(initial_time) {
             "https://www.coupons.com",
             "https://www.couponfollow.com",
             "https://www.couponcabin.com",
-            "https://www.thekrazycouponlady.com",
-            "https://www.dealsplus.com"
+            "https://thekrazycouponlady.com",
+            "https://www.dealsplus.com",
+            "https://www.chewy.com",
+            "https://www.petco.com",
+            "https://www.petsmart.com"
         ];
         //initialize target_website variable
         var target_website = null;
